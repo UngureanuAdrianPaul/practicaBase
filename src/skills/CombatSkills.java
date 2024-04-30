@@ -1,6 +1,6 @@
 package skills;
 
-public interface CombateSkills {
+public interface CombatSkills {
     
     int kick();
     int punch();

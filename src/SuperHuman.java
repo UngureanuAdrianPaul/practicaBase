@@ -1,8 +1,9 @@
 import java.util.Random;
 
-import skills.CombateSkills;
+import skills.CombatSkills;
+import skills.Skill;
 
-public class SuperHuman implements CombateSkills {
+public class SuperHuman implements CombatSkills {
     // los atributos numéricos siempre van a estar entre [0..100]
     // atributos:
     // nombre como string
@@ -49,38 +50,38 @@ public class SuperHuman implements CombateSkills {
     public SuperHuman() {
         Random aleatorio = new Random();
         this.nombre = "Unknown";
-        this.inteligencia = aleatorio.nextInt(50);
+        this.inteligencia = aleatorio.nextInt(10);
         this.agilidad = aleatorio.nextInt(10);
         this.fuerza = aleatorio.nextInt(10);
         this.resistencia = aleatorio.nextInt(10);
     }
 
     // con un parametro q indica q parámetro va a a ser predominante.
-    public SuperHuman(String caracteristica) {
+    public SuperHuman(Skill habilidad) {
         Random aleatorio = new Random();
         this.nombre = "Unknown";
-        switch (caracteristica) {
-            case "inteligencia":
+        switch (habilidad) {
+            case inteligencia:
                 this.inteligencia = aleatorio.nextInt(5, 10);
                 this.agilidad = aleatorio.nextInt(10);
                 this.fuerza = aleatorio.nextInt(10);
                 this.resistencia = aleatorio.nextInt(10);
                 break;
-            case "agilidad":
+            case agilidad:
                 this.inteligencia = aleatorio.nextInt(10);
                 this.agilidad = aleatorio.nextInt(5, 10);
                 this.fuerza = aleatorio.nextInt(10);
                 this.resistencia = aleatorio.nextInt(10);
                 break;
 
-            case "fuerza":
+            case fuerza:
                 this.inteligencia = aleatorio.nextInt(10);
                 this.agilidad = aleatorio.nextInt(10);
                 this.fuerza = aleatorio.nextInt(5, 10);
                 this.resistencia = aleatorio.nextInt(10);
                 break;
 
-            case "resistencia":
+            case resistencia:
                 this.inteligencia = aleatorio.nextInt(10);
                 this.agilidad = aleatorio.nextInt(10);
                 this.fuerza = aleatorio.nextInt(5, 10);
@@ -159,21 +160,21 @@ public class SuperHuman implements CombateSkills {
     // valor
     // se le suma a la característica.
     // ejemplo: entrenamiento(5,"agilidad");
-    // me incrementa agilidad en un valor=[0..5](aleatorio
-    public void entrenamiento(int dias, String caracteristica) {
+    // me incrementa agilidad en un valor=[0..5](aleatorio)
+    public void entrenamiento(int dias, Skill caracteristica) {
         Random aleatorio = new Random();
 
         switch (caracteristica) {
-            case "inteligencia":
+            case inteligencia:
                 this.setInteligencia(aleatorio.nextInt(dias));
                 break;
-            case "agilidad":
+            case agilidad:
                 this.setAgilidad(aleatorio.nextInt(dias));
                 break;
-            case "fuerza":
+            case fuerza:
                 this.setFuerza(aleatorio.nextInt(dias));
                 break;
-            case "resistencia":
+            case resistencia:
                 this.setResistencia(aleatorio.nextInt(dias));
                 break;
             default:
@@ -183,97 +184,18 @@ public class SuperHuman implements CombateSkills {
 
     public boolean combate(SuperHuman enemy) {
         // acaba cuando resistencia de algún luchador sea 0;
-        Random aleatorio = new Random();
+
         int miResistencia = this.resistencia;
         int enemyResistencia = enemy.resistencia;
-        int golpe = 0;
+
         while ((miResistencia > 0) && (enemyResistencia > 0)) {
-            if (this.tiradaDados("inteligencia") > enemy.tiradaDados("inteligencia")) {
+            if (this.tiradaDados(Skill.inteligencia) > enemy.tiradaDados(Skill.inteligencia)) {
                 // ataco yo
-                System.out.print("Atacante: YO [");
-                if (aleatorio.nextBoolean()) {
-                    // patada
-                    System.out.print("Patada ");
-                    if (aleatorio.nextInt(100) >= (100 - enemy.inteligencia)) {
-                        // exito en parar
-                        System.out.print("parada ");
-                        golpe = enemy.shieldDown() - this.kick();
+                enemyResistencia = ataque(this, enemy, enemyResistencia);
 
-                    } else {
-                        // fallo en parar
-                        System.out.print(" no parada ");
-                        // defiendo con la mitad.
-                        golpe = (enemy.shieldDown() / 2) - this.kick();
-
-                    }
-                    if (golpe < 0) {
-                        // he parado pero me ha hecho daño.
-                        enemyResistencia = enemyResistencia + golpe;
-                    } // si he parado pero no me ha hecho daño, no hago nada.
-                } else {
-                    // puñetazo
-                    System.out.print("Puñetazo ");
-                    if (aleatorio.nextInt(100) >= (100 - enemy.inteligencia)) {
-                        // exito en parar
-                        System.out.print("parado ");
-                        golpe = enemy.shieldUp() - this.punch();
-
-                    } else {
-                        // fallo en parar
-                        System.out.print("no parado ");
-                        // defiendo con la mitad.
-                        golpe = (enemy.shieldUp() / 2) - this.punch();
-
-                    }
-                    if (golpe < 0) {
-                        // he parado pero me ha hecho daño.
-                        enemyResistencia = enemyResistencia + golpe;
-                    } // si he parado pero no me ha hecho daño, no hago nada.
-                }
-                System.out.println("]");
             } else {
                 // atacas tu
-                System.out.print("Atacante: EL [");
-                if (aleatorio.nextBoolean()) {
-                    // patada
-                    System.out.print("Patada ");
-                    if (aleatorio.nextInt(100) >= (100 - this.inteligencia)) {
-                        // exito en parar
-                        System.out.print("parada ");
-                        golpe = this.shieldDown() - enemy.kick();
-
-                    } else {
-                        // fallo en parar
-                        System.out.print(" no parada ");
-                        // defiendo con la mitad.
-                        golpe = (this.shieldDown() / 2) - enemy.kick();
-
-                    }
-                    if (golpe < 0) {
-                        // he parado pero me ha hecho daño.
-                        miResistencia = miResistencia + golpe;
-                    } // si he parado pero no me ha hecho daño, no hago nada.
-                } else {
-                    // puñetazo
-                    System.out.print("Puñetazo ");
-                    if (aleatorio.nextInt(100) >= (100 - this.inteligencia)) {
-                        // exito en parar
-                        System.out.print("parado ");
-                        golpe = this.shieldUp() - enemy.punch();
-
-                    } else {
-                        // fallo en parar
-                        System.out.print("no parado ");
-                        // defiendo con la mitad.
-                        golpe = (this.shieldUp() / 2) - enemy.punch();
-
-                    }
-                    if (golpe < 0) {
-                        // he parado pero me ha hecho daño.
-                        miResistencia = miResistencia + golpe;
-                    } // si he parado pero no me ha hecho daño, no hago nada.
-                }
-                System.out.println("]");
+                miResistencia = ataque(enemy, this, miResistencia);
             }
             System.out.println("[Mi resistencia: " + miResistencia +
                     "] [Enemy resistencia: " + enemyResistencia + "]");
@@ -284,44 +206,44 @@ public class SuperHuman implements CombateSkills {
 
     @Override
     public int kick() { // se basa en fuerza
-        return tiradaDados("fuerza");
+        return tiradaDados(Skill.fuerza);
     }
 
     @Override
     public int punch() { // se basa en fuerza
-        return tiradaDados("fuerza");
+        return tiradaDados(Skill.fuerza);
     }
 
     @Override
     public int shieldUp() { // se basa en agilidad
-        return tiradaDados("agilidad");
+        return tiradaDados(Skill.agilidad);
     }
 
     @Override
     public int shieldDown() { // se basa en agilidad
-        return tiradaDados("agilidad");
+        return tiradaDados(Skill.agilidad);
     }
 
-    private int tiradaDados(String atributo) {
+    private int tiradaDados(Skill atributo) {
         Random aleatorio = new Random();
         int resultado = 0;
         switch (atributo) {
-            case "inteligencia":
+            case inteligencia:
                 for (int i = 0; i < this.getInteligencia(); i++) {
                     resultado = resultado + aleatorio.nextInt(10);
                 }
                 break;
-            case "agilidad":
+            case agilidad:
                 for (int i = 0; i < this.getAgilidad(); i++) {
                     resultado = resultado + aleatorio.nextInt(10);
                 }
                 break;
-            case "fuerza":
+            case fuerza:
                 for (int i = 0; i < this.getFuerza(); i++) {
                     resultado = resultado + aleatorio.nextInt(10);
                 }
                 break;
-            case "resistencia":
+            case resistencia:
                 for (int i = 0; i < this.getResistencia(); i++) {
                     resultado = resultado + aleatorio.nextInt(10);
                 }
@@ -331,6 +253,48 @@ public class SuperHuman implements CombateSkills {
         }
 
         return resultado;
+    }
+
+    private static int ataque(SuperHuman atacante, SuperHuman defensor, int defensorResistencia) {
+
+        Random aleatorio = new Random();
+        boolean tipoAtaque = aleatorio.nextBoolean();
+        int golpe = 0;
+
+        System.out.print("Atacante: " + atacante.nombre + " [");
+        if (tipoAtaque == true) {
+            System.out.print("Patada ");
+        } else {
+            System.out.print("Puñetazo ");
+        }
+
+        if (aleatorio.nextInt(100) >= (100 - defensor.inteligencia)) {
+            // exito en parar
+            System.out.print("golpe parado ");
+            if (tipoAtaque == true) {
+                golpe = defensor.shieldDown() - atacante.kick();
+            } else {
+                golpe = defensor.shieldUp() - atacante.punch();
+            }
+        } else {
+            // fallo en parar
+            System.out.print("golpe NO parado ");
+            // defiendo con la mitad.
+            if (tipoAtaque == true) {
+                golpe = (defensor.shieldDown() / 2) - atacante.kick();
+            } else {
+                golpe = (defensor.shieldUp() / 2) - atacante.punch();
+            }
+
+        }
+        if (golpe < 0) {
+            // he parado pero me ha hecho daño.
+            defensorResistencia = defensorResistencia + golpe;
+        } // si he parado pero no me ha hecho daño, no hago nada.
+
+        System.out.println("]");
+
+        return defensorResistencia;
     }
 
 }
