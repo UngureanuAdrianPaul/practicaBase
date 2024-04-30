@@ -191,11 +191,11 @@ public class SuperHuman implements CombatSkills {
         while ((miResistencia > 0) && (enemyResistencia > 0)) {
             if (this.tiradaDados(Skill.inteligencia) > enemy.tiradaDados(Skill.inteligencia)) {
                 // ataco yo
-                enemyResistencia = ataque(this, enemy, enemyResistencia);
+                enemyResistencia = this.ataque(enemy, enemyResistencia);
 
             } else {
                 // atacas tu
-                miResistencia = ataque(enemy, this, miResistencia);
+                miResistencia = enemy.ataque(this, miResistencia);
             }
             System.out.println("[Mi resistencia: " + miResistencia +
                     "] [Enemy resistencia: " + enemyResistencia + "]");
@@ -255,13 +255,13 @@ public class SuperHuman implements CombatSkills {
         return resultado;
     }
 
-    private static int ataque(SuperHuman atacante, SuperHuman defensor, int defensorResistencia) {
+    private int ataque(SuperHuman defensor, int defensorResistencia) {
 
         Random aleatorio = new Random();
         boolean tipoAtaque = aleatorio.nextBoolean();
         int golpe = 0;
 
-        System.out.print("Atacante: " + atacante.nombre + " [");
+        System.out.print("Atacante: " + this.nombre + " [");
         if (tipoAtaque == true) {
             System.out.print("Patada ");
         } else {
@@ -272,18 +272,18 @@ public class SuperHuman implements CombatSkills {
             // exito en parar
             System.out.print("golpe parado ");
             if (tipoAtaque == true) {
-                golpe = defensor.shieldDown() - atacante.kick();
+                golpe = defensor.shieldDown() - this.kick();
             } else {
-                golpe = defensor.shieldUp() - atacante.punch();
+                golpe = defensor.shieldUp() - this.punch();
             }
         } else {
             // fallo en parar
             System.out.print("golpe NO parado ");
             // defiendo con la mitad.
             if (tipoAtaque == true) {
-                golpe = (defensor.shieldDown() / 2) - atacante.kick();
+                golpe = (defensor.shieldDown() / 2) - this.kick();
             } else {
-                golpe = (defensor.shieldUp() / 2) - atacante.punch();
+                golpe = (defensor.shieldUp() / 2) - this.punch();
             }
 
         }

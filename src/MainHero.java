@@ -4,6 +4,8 @@ public class MainHero {
         SuperVillain putin = new SuperVillain();
         System.out.println(danielHero.toString());
         System.out.println(putin.toString());
+        danielHero.setNombre("Daniel");
+       
 
         danielHero.combate(putin);
 
